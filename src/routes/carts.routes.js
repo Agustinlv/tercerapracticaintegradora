@@ -1,26 +1,28 @@
 //Module imports
 import { Router } from 'express';
+import passport from "passport";
 
 const router = Router();
 
 //File imports
 import { addToCart, createCart, deleteFromCart, emptyCart, getCart, replaceCart, updateProductQty, purchaseCart } from '../dao/controllers/cart.controller.js';
-import { validateCart, validateProduct, validateUser, validateQuantity, validateCartContent } from '../middlewares/validations.js';
+import { validateCart, validateProduct, validateQuantity, validateCartContent } from '../middlewares/validations.js';
+import { userAccess } from '../middlewares/access.js';
 
-router.post('/:uid', validateUser, createCart);
+router.post('/:uid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), userAccess, createCart);
 
-router.post('/:cid/product/:pid', validateCart, validateProduct, addToCart);
+router.post('/:cid/product/:pid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), userAccess, validateCart, validateProduct, addToCart);
 
-router.delete('/:cid/product/:pid', validateCart, validateProduct, validateCartContent, deleteFromCart);
+router.delete('/:cid/product/:pid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), userAccess, validateCart, validateProduct, validateCartContent, deleteFromCart);
 
-router.delete('/:cid', validateCart, emptyCart);
+router.delete('/:cid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), userAccess, validateCart, emptyCart);
 
-router.get('/:cid', validateCart, getCart);
+router.get('/:cid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), userAccess, validateCart, getCart);
 
-router.post('/:cid/purchase', purchaseCart);
+router.post('/:cid/purchase', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), userAccess, purchaseCart);
 
-router.put('/:cid', validateCart, replaceCart);
+router.put('/:cid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), userAccess, validateCart, replaceCart);
 
-router.put('/:cid/product/:pid', validateCart, validateProduct, validateQuantity, updateProductQty);
+router.put('/:cid/product/:pid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), userAccess, validateCart, validateProduct, validateQuantity, updateProductQty);
 
 export default router;

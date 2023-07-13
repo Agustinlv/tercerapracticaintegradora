@@ -6,7 +6,7 @@ const router = Router();
 
 //File imports
 import { renderProducts, renderCart, renderProfile, renderRegister, renderLogin, redirectProducts, renderAddProduct, renderChat } from '../dao/controllers/view.controller.js';
-import { adminAccess, publicAccess, userAccess } from "../middlewares/access.js";
+import { adminAccess, privateAccess, publicAccess, userAccess } from "../middlewares/access.js";
 
 router.get('/', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), redirectProducts);
 

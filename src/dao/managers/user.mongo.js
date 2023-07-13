@@ -2,6 +2,7 @@ import userModel from "../models/user.models.js";
 import { cartDao } from '../handler.js';
 import { createHash } from '../../utils.js';
 import { generateToken } from "../../config/token.js";
+import { UserDto } from "../../dto/user.dto.js";
 
 export class UserMongo{
 
@@ -58,12 +59,14 @@ export class UserMongo{
         
         user.cart = response.message._id;
 
+        const userDto = new UserDto(user);
+
         const access_token = generateToken(user);
     
         return{
             status: "Success",
             message: "You have succesfully logged in",
-            user: user,
+            user: userDto,
             token: access_token,
         };
     
