@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 //File imports
 import { config } from "./config.js";
+import customLogger from "../utils/logger.js";
 
 export const connectDB = async () => {
 
@@ -9,11 +10,11 @@ export const connectDB = async () => {
 
         await mongoose.connect(config.mongo.url);
         
-        console.log("MongoDB Connected");
+        customLogger.info(`${new Date().toLocaleDateString()}: Connected to MongoDB`);
 
     } catch (error) {
 
-        console.log(error.message);
+        customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
 
     };
 

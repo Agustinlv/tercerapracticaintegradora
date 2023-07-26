@@ -6,7 +6,7 @@ const program = new Command();
 
 import __dirname from "../utils.js"
 
-program.option("-mode <mode>", "Environment Mode", "dev");
+program.option("-mode <mode>", "Environment Mode", "prod");
 
 program.parse()
 
@@ -26,9 +26,12 @@ const MAIL_ACCOUNT = process.env.MAIL_ACCOUNT;
 
 const MAIL_PASSWORD = process.env.MAIL_PASSWORD;
 
+const ENV = environment.Mode;
+
 export const config = {
     server: {port: PORT},
     mongo: {url: MONGO},
     secret: {key: SECRET},
-    email: {account: MAIL_ACCOUNT, password: MAIL_PASSWORD}
+    email: {account: MAIL_ACCOUNT, password: MAIL_PASSWORD},
+    environment: {mode: ENV}
 };

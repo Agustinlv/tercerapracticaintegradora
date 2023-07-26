@@ -1,5 +1,8 @@
+//Module imports
 import messageModel from "../models/messages.model.js";
 import timestamp from "time-stamp";
+//File imports
+import logger from "../../utils/logger.js";
 
 export class MessageMongo{
 

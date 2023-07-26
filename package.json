@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "bcrypt": "^5.1.0",
     "commander": "^11.0.0",
     "cookie-parser": "^1.4.6",
@@ -25,6 +26,7 @@
     "passport-jwt": "^4.0.1",
     "socket.io": "^4.7.1",
     "time-stamp": "^2.2.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "winston": "^3.10.0"
   }
 }

@@ -14,12 +14,16 @@ import productRouter from './routes/products.routes.js';
 import cartRouter from './routes/carts.routes.js';
 import sessionRouter from './routes/sessions.routes.js'
 import viewRouter from './routes/views.routes.js';
+import loggerRouter from './routes/logger.routes.js';
 import { config } from './config/config.js';
 import { messageDao } from './dao/handler.js';
+import customLogger from './utils/logger.js';
 
 const PORT = config.server.port;
 
 const app = express();
+
+customLogger.info(`${new Date().toLocaleDateString()}: Application running in ${config.environment.mode} mode`);
 
 //Cookie Parser
 app.use(cookieParser());
@@ -50,21 +54,26 @@ app.use('/api/carts', cartRouter);
 
 app.use('/api/sessions', sessionRouter);
 
+app.use('/loggerTest', loggerRouter);
+
 app.use('/', viewRouter);
 
+const server = app.listen(PORT, () => {
 
-const server = app.listen(PORT, () => {console.log(`El servidor está corriendo en el puerto ${PORT}`)});
+    customLogger.info(`${new Date().toLocaleDateString()}: Server listening on port ${PORT}`);
+
+});
 
 const io = new Server(server);
 
 io.on('connection', (socket) => {
 
-    console.log(`Socket Connected`);
+    customLogger.info(`Socket Connected`);
 
     socket.on('newMessage', async (entry) => {
 
         await messageDao.saveMessage(entry.username, entry.message);
-        
+
         const messageHistory = await messageDao.getMessages();
 
         io.emit('messageLog', messageHistory.message);

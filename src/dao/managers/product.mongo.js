@@ -1,5 +1,8 @@
+//Module imports
 import productModel from '../models/product.model.js';
 import { v4 as uuidv4 } from "uuid";
+//File imports
+import customLogger from "../../utils/logger.js";
 
 export class ProductMongo{
 
@@ -8,6 +11,8 @@ export class ProductMongo{
     };
 
     async getProducts(query){
+
+        customLogger.debug(`${new Date().toLocaleDateString()}: ${query}`);
     
         const {limit = 10, page = 1, category, available, sort} = query;
         
@@ -61,6 +66,8 @@ export class ProductMongo{
 
         } catch (error) {
 
+            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
+
             return{
                 code: 400,
                 status: "Error",
@@ -75,6 +82,8 @@ export class ProductMongo{
         
         try {
 
+            customLogger.debug(`${new Date().toLocaleDateString()}: ${pid}`);
+
             const product = await productModel.findById(pid);
 
             return{
@@ -84,6 +93,8 @@ export class ProductMongo{
             };
 
         } catch(error) {
+
+            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
 
             return{
                 code: 400,
@@ -100,6 +111,8 @@ export class ProductMongo{
         try {
             
             product.code = uuidv4();
+
+            customLogger.debug(`${new Date().toLocaleDateString()}: ${product}`);
                 
             await productModel.create(product);
     
@@ -110,6 +123,8 @@ export class ProductMongo{
             };
     
         } catch (error) {
+
+            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
             
             return{
                 code: 400,
@@ -125,6 +140,8 @@ export class ProductMongo{
 
         //Si el producto no existe, no hay nada para actualizar
         try {
+            
+            customLogger.debug(`${new Date().toLocaleDateString()}: ${{pid: pid, updatedProduct: updatedProduct}}`);
 
             const productFound = await productModel.findById(pid);
 
@@ -141,6 +158,8 @@ export class ProductMongo{
 
         } catch (error) {
 
+            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
+
             return{
                 code: 400,
                 status: 'Error',
@@ -155,6 +174,8 @@ export class ProductMongo{
 
         try {
 
+            customLogger.debug(`${new Date().toLocaleDateString()}: ${pid}`);
+            
             await productModel.findByIdAndDelete(pid);
 
             return{
@@ -164,6 +185,8 @@ export class ProductMongo{
             };
 
         } catch(error) {
+
+            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
 
             return{
                 code: 400,
