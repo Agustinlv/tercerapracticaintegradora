@@ -26,12 +26,14 @@ const MAIL_ACCOUNT = process.env.MAIL_ACCOUNT;
 
 const MAIL_PASSWORD = process.env.MAIL_PASSWORD;
 
+const MAIL_TOKEN = process.env.MAIL_TOKEN;
+
 const ENV = environment.Mode;
 
 export const config = {
     server: {port: PORT},
     mongo: {url: MONGO},
     secret: {key: SECRET},
-    email: {account: MAIL_ACCOUNT, password: MAIL_PASSWORD},
+    email: {account: MAIL_ACCOUNT, password: MAIL_PASSWORD, token: MAIL_TOKEN},
     environment: {mode: ENV}
 };

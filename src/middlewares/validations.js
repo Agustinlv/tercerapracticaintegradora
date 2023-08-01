@@ -2,7 +2,11 @@ import cartModel from "../dao/models/cart.model.js";
 import productModel from "../dao/models/product.model.js";
 import userModel from "../dao/models/user.models.js";
 import { validatePassword } from "../utils.js";
-import logger from "../utils/logger.js";
+import customLogger from "../utils/logger.js";
+import { loggerPrefix } from "../utils/logger.js";
+import { validateEmailToken } from "../utils/token.js";
+
+const filename = 'validations.js';
 
 export const validateLogin = async (req, res, next) => {
 
@@ -12,7 +16,7 @@ export const validateLogin = async (req, res, next) => {
 
     if (!user) {
 
-        logger.error(`${new Date().toLocaleDateString()}: Incorrect credentials`);
+        customLogger.error(`Date: ${new Date().toLocaleDateString()} - Message: Incorrect credentials`);
 
         return res.status(400).send({
             status: 'Error',
@@ -25,7 +29,7 @@ export const validateLogin = async (req, res, next) => {
     
     if (!isValidPassword){
 
-        logger.error(`${new Date().toLocaleDateString()}: Incorrect credentials`);
+        customLogger.error(`${new Date().toLocaleDateString()}: Incorrect credentials`);
 
         return res.status(400).send({
             status: 'Error',
@@ -44,11 +48,30 @@ export const validateUser = async (req, res, next) => {
 
     if (!user){
 
-        logger.error(`${new Date().toLocaleDateString()}: Incorrect credentials`);
+        customLogger.error(`${new Date().toLocaleDateString()}: Incorrect credentials`);
 
         return res.status(400).send({
             status: "Error",
             message: "Incorrect credentials"
+        });
+
+    };
+
+    next();
+
+};
+
+export const validateResetToken = async (req, res, next) => {
+
+    const token = req.query.token;
+
+    const validToken = validateEmailToken(token);
+
+    if (!validToken) {
+
+        return res.status(400).send({
+            status: 'Error',
+            message: 'The reset link is no longer valid. Please generate a new one'
         });
 
     };
@@ -63,7 +86,7 @@ export const validateCart = async (req, res, next) => {
 
     if (!cart) {
 
-        logger.error(`${new Date().toLocaleDateString()}: No se pudo encontrar un cart con el ID ${req.params.cid}`);
+        customLogger.error(`${new Date().toLocaleDateString()}: No se pudo encontrar un cart con el ID ${req.params.cid}`);
         
         return res.status(400).send({
             status: 'Error',
@@ -84,7 +107,7 @@ export const validateCartContent = async (req, res, next) => {
 
     if(productIndex === -1){
 
-        logger.error(`${new Date().toLocaleDateString()}: El cart ${req.params.cid} no contiene el producto ${req.params.pid}`);
+        customLogger.error(loggerPrefix(filename, `El cart ${req.params.cid} no contiene el producto ${req.params.pid}`));
 
         return res.status(400).send({
             status: 'Error',
@@ -105,7 +128,7 @@ export const validateProduct = async (req, res, next) => {
 
     if (!product) {
 
-        logger.error(`${new Date().toLocaleDateString()}: No se pudo encontrar un producto con el ID ${pid}`);
+        customLogger.error(`${new Date().toLocaleDateString()}: No se pudo encontrar un producto con el ID ${pid}`);
 
         return res.status(400).send({
             status: 'Error',
@@ -124,7 +147,7 @@ export const validateQuantity = async (req, res, next) => {
 
     if (!quantity) {
 
-        logger.error(`${new Date().toLocaleDateString()}: No se encontró una cantidad válida en el body`);
+        customLogger.error(`${new Date().toLocaleDateString()}: No se encontró una cantidad válida en el body`);
 
         return res.status(400).send({
             status: "Error",
@@ -134,5 +157,69 @@ export const validateQuantity = async (req, res, next) => {
     };
 
     next();
+
+};
+
+export const validateNewPassword = async (req, res, next) => {
+
+    try {
+        
+        const { email, newPassword } = req.body;
+        
+        const user = await userModel.findOne({email: email});
+    
+        const isValidPassword = validatePassword(newPassword, user);
+        
+        if (isValidPassword){
+    
+            customLogger.error(loggerPrefix(filename, `New password can't be the same as the previous password`));
+    
+            return res.status(400).send({
+                status: 'Error',
+                message: 'Incorrect credentials'
+            });
+    
+        };
+    
+        next();
+
+    } catch (error) {
+
+        return res.status(400).send({
+            status: 'Error',
+            message: error.message
+        });
+
+    };
+
+};
+
+export const validateRole = (roles) => {
+
+    return (req, res, next) => {
+
+        const user = req.user.user;
+
+        if (!user) {
+
+            return res.status(403).send({
+                status: "Error",
+                message: "Needs to authenticate first"
+            });
+        
+        };
+
+        if (!roles.includes(user.role)) {
+
+            return res.status(403).send({
+                status: "Error",
+                message: "Not authorized"
+            });
+
+        };
+
+        next();
+
+    };
 
 };

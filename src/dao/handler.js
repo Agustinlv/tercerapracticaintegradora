@@ -1,4 +1,4 @@
-import { connectDB } from "../config/dbConnection.js";
+import { connectDB } from "../config/connection.js";
 import { CartMongo } from "./managers/cart.mongo.js";
 import { UserMongo } from "./managers/user.mongo.js";
 import { ProductMongo } from "./managers/product.mongo.js";

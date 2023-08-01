@@ -72,4 +72,10 @@ if (environment === "dev") {
 
 };
 
+export const loggerPrefix = (filename, message) => {
+
+    return `Date: ${new Date().toLocaleDateString()} - File: ${filename} - Message: ${message}`;
+
+};
+
 export default customLogger;

@@ -1,2 +1,3 @@
 {"level":"error","message":"This is an error message. Visible also in production. Logged in the file only in production"}
 {"level":"fatal","message":"This is a fatal message. Visible also in production. Logged in the file only in production"}
+{"level":"error","message":"7/31/2023: filename is not defined"}

@@ -14,16 +14,20 @@ import productRouter from './routes/products.routes.js';
 import cartRouter from './routes/carts.routes.js';
 import sessionRouter from './routes/sessions.routes.js'
 import viewRouter from './routes/views.routes.js';
+import userRouter from './routes/users.routes.js';
 import loggerRouter from './routes/logger.routes.js';
 import { config } from './config/config.js';
 import { messageDao } from './dao/handler.js';
 import customLogger from './utils/logger.js';
+import { loggerPrefix } from './utils/logger.js';
 
 const PORT = config.server.port;
 
 const app = express();
 
-customLogger.info(`${new Date().toLocaleDateString()}: Application running in ${config.environment.mode} mode`);
+const filename = 'app.js'
+
+customLogger.info(loggerPrefix(filename,`Application running in ${config.environment.mode} mode`));
 
 //Cookie Parser
 app.use(cookieParser());
@@ -54,13 +58,15 @@ app.use('/api/carts', cartRouter);
 
 app.use('/api/sessions', sessionRouter);
 
+app.use('/api/users', userRouter);
+
 app.use('/loggerTest', loggerRouter);
 
 app.use('/', viewRouter);
 
 const server = app.listen(PORT, () => {
 
-    customLogger.info(`${new Date().toLocaleDateString()}: Server listening on port ${PORT}`);
+    customLogger.info(loggerPrefix(filename,`Server listening on port ${PORT}`));
 
 });
 
@@ -68,7 +74,7 @@ const io = new Server(server);
 
 io.on('connection', (socket) => {
 
-    customLogger.info(`Socket Connected`);
+    customLogger.info(loggerPrefix(filename, `Socket Connected`));
 
     socket.on('newMessage', async (entry) => {
 

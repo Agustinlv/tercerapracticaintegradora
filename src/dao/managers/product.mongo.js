@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 //File imports
 import customLogger from "../../utils/logger.js";
 
+const filename = 'product.mongo.js';
+
 export class ProductMongo{
 
     constructor(){
@@ -34,7 +36,7 @@ export class ProductMongo{
         
         try {
             
-            const {docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages} = await productModel.paginate(
+            const {docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages} = await this.model.paginate(
                 paginateQuery,
                 {
                     limit: limit,
@@ -66,7 +68,7 @@ export class ProductMongo{
 
         } catch (error) {
 
-            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
+            customLogger.error(`Date: ${new Date().toLocaleDateString()} - File: ${filename} - Message: ${error.message}`);
 
             return{
                 code: 400,
@@ -84,7 +86,7 @@ export class ProductMongo{
 
             customLogger.debug(`${new Date().toLocaleDateString()}: ${pid}`);
 
-            const product = await productModel.findById(pid);
+            const product = await this.model.findById(pid);
 
             return{
                 code: 202,
@@ -94,7 +96,7 @@ export class ProductMongo{
 
         } catch(error) {
 
-            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
+            customLogger.error(`Date: ${new Date().toLocaleDateString()} - File: ${filename} - Message: ${error.message}`);
 
             return{
                 code: 400,
@@ -114,7 +116,7 @@ export class ProductMongo{
 
             customLogger.debug(`${new Date().toLocaleDateString()}: ${product}`);
                 
-            await productModel.create(product);
+            await this.model.create(product);
     
             return{
                 code: 202,
@@ -124,7 +126,7 @@ export class ProductMongo{
     
         } catch (error) {
 
-            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
+            customLogger.error(`Date: ${new Date().toLocaleDateString()} - File: ${filename} - Message: ${error.message}`);
             
             return{
                 code: 400,
@@ -141,9 +143,9 @@ export class ProductMongo{
         //Si el producto no existe, no hay nada para actualizar
         try {
             
-            customLogger.debug(`${new Date().toLocaleDateString()}: ${{pid: pid, updatedProduct: updatedProduct}}`);
+            customLogger.debug(`Date: ${new Date().toLocaleDateString()} - File: ${filename} - Message: ${{pid: pid, updatedProduct: updatedProduct}}`);
 
-            const productFound = await productModel.findById(pid);
+            const productFound = await this.model.findById(pid);
 
             //Hago esto como para que no editen el product code accidentalmente
             updatedProduct.code = productFound.code;
@@ -158,7 +160,7 @@ export class ProductMongo{
 
         } catch (error) {
 
-            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
+            customLogger.error(`Date: ${new Date().toLocaleDateString()} - File: ${filename} - Message: ${error.message}`);
 
             return{
                 code: 400,
@@ -176,7 +178,7 @@ export class ProductMongo{
 
             customLogger.debug(`${new Date().toLocaleDateString()}: ${pid}`);
             
-            await productModel.findByIdAndDelete(pid);
+            await this.model.findByIdAndDelete(pid);
 
             return{
                 code: 202,
@@ -186,7 +188,7 @@ export class ProductMongo{
 
         } catch(error) {
 
-            customLogger.error(`${new Date().toLocaleDateString()}: ${error.message}`);
+            customLogger.error(`Date: ${new Date().toLocaleDateString()} - File: ${filename} - Message: ${error.message}`);
 
             return{
                 code: 400,

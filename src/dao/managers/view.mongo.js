@@ -1,3 +1,6 @@
+//Module imports
+import mongoose from 'mongoose';
+//File imports
 import productModel from '../models/product.model.js';
 import cartModel from '../models/cart.model.js';
 
@@ -8,17 +11,40 @@ export class ViewMongo{
         this.cartModel = cartModel
     };
 
-    async renderProducts(limit = 10, page = 1, category, available, sort){
-
+    async renderProducts(limit = 10, page = 1, category, available, sort, user = {}, adminPage = false){
+        
+        const uid = String(user._id);
+        
         let query = {};
 
         if (category) {
-            if (available) {
-                query = {category: category, stock: { $gt: 0}}
-            } else {
-                query = {category: category}
-            }
+
+            query = {category: category};
+
         };
+
+        if (available) {
+
+            query = {...query, stock: { $gt: 0}};
+
+        };
+
+        if (user.role === 'premium') {
+
+
+            if (adminPage) {
+
+                query = {owner: uid};
+
+            } else {
+
+                query = {owner: { $ne: uid }};
+
+            };
+
+        };
+
+        console.log(query);
 
         const {docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages} = await this.productModel.paginate(
             query,
