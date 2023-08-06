@@ -94,9 +94,9 @@ export class UserMongo{
             await sendRecoveryPassword(email, resetToken);
 
             return{
+                code: 202,
                 status: "Success",
-                message: "Password recovery email sent",
-                token: resetToken,
+                message: "Password recovery email sent"
             };
 
 
@@ -128,6 +128,7 @@ export class UserMongo{
             await this.model.findOneAndUpdate({email: email}, newUserData);
 
             return{
+                code: 202,
                 status: "Success",
                 message: "Password successfuly reset"
             };

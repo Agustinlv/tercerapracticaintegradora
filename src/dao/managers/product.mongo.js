@@ -108,26 +108,28 @@ export class ProductMongo{
     
     };
     
-    async addProduct(product){
+    async addProduct(email, product){
         
         try {
-            
+
+            product.owner = email;
+
             product.code = uuidv4();
 
             customLogger.debug(`${new Date().toLocaleDateString()}: ${product}`);
-                
+
             await this.model.create(product);
-    
+
             return{
                 code: 202,
                 status: 'Success',
                 message: `El producto ${product.title} ha sido agregado con éxito.`
             };
-    
+
         } catch (error) {
 
             customLogger.error(`Date: ${new Date().toLocaleDateString()} - File: ${filename} - Message: ${error.message}`);
-            
+
             return{
                 code: 400,
                 status: 'Error',

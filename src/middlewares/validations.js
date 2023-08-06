@@ -65,13 +65,13 @@ export const validateResetToken = async (req, res, next) => {
 
     const token = req.query.token;
 
-    const validToken = validateEmailToken(token);
+    const validEmail = validateEmailToken(token);
 
-    if (!validToken) {
+    if (!validEmail) {
 
         return res.status(400).send({
             status: 'Error',
-            message: 'The reset link is no longer valid. Please generate a new one'
+            message: 'The reset link is no longer valid. Please generate a new one.'
         });
 
     };
@@ -163,24 +163,24 @@ export const validateQuantity = async (req, res, next) => {
 export const validateNewPassword = async (req, res, next) => {
 
     try {
-        
-        const { email, newPassword } = req.body;
-        
+
+        const { email, password } = req.body;
+
         const user = await userModel.findOne({email: email});
-    
-        const isValidPassword = validatePassword(newPassword, user);
-        
+
+        const isValidPassword = validatePassword(password, user);
+
         if (isValidPassword){
-    
+
             customLogger.error(loggerPrefix(filename, `New password can't be the same as the previous password`));
-    
+
             return res.status(400).send({
                 status: 'Error',
-                message: 'Incorrect credentials'
+                message: "New password can't be the same as the previous password"
             });
-    
+
         };
-    
+
         next();
 
     } catch (error) {

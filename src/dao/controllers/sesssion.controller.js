@@ -47,7 +47,7 @@ export const current = (req, res) => {
 export const forgotPassword = async (req, res) => {
 
     const { email } = req.body;
-    
+
     const response = await userDao.forgotPassword(email);
 
     return res.status(response.code).send({
@@ -59,9 +59,9 @@ export const forgotPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
 
-    const { email, newPassword } = req.body;
+    const { email, password } = req.body;
 
-    const response = await userDao.resetPassword(email, newPassword);
+    const response = await userDao.resetPassword(email, password);
 
     return res.status(response.code).send({
         status: response.status,

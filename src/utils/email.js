@@ -16,15 +16,15 @@ export const transporter = nodemailer.createTransport({
     }
 });
 
-export const sendRecoveryPassword = async(userMail, token) => {
+export const sendRecoveryPassword = async(usermail, token) => {
 
     const PORT = config.server.port;
 
-    const resetLink = `http://localhost:${PORT}/reset-password?token=${token}`;
+    const resetLink = `http://localhost:${PORT}/reset-password?token=${token}&email=${usermail}`;
 
     await transporter.sendMail({
         from: config.email.account,
-        to: userMail,
+        to: usermail,
         subject: "Reset Password",
         html: `
         <div>

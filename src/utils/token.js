@@ -8,7 +8,7 @@ import { loggerPrefix } from './logger.js';
 
 const KEY = config.secret.key;
 
-const MAIL_TOKEN = config.email.token;
+const MAIL_KEY = config.email.key;
 
 const filename = 'token.js';
 
@@ -20,9 +20,9 @@ export const generateToken = (user) => {
 
 };
 
-export const generateEmailToken = (email, expirity) => {
+export const generateEmailToken = (email, expiration) => {
 
-    const token = jwt.sign({email}, MAIL_TOKEN, {expiresIn: expirity});
+    const token = jwt.sign({email}, MAIL_KEY, {expiresIn: expiration});
 
     return token;
 
@@ -32,7 +32,7 @@ export const validateEmailToken = (token) => {
 
     try {
 
-        const info = jwt.verify(token, MAIL_TOKEN);
+        const info = jwt.verify(token, MAIL_KEY);
 
         return info.email;
 

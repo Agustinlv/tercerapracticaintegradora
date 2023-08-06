@@ -12,9 +12,9 @@ export class ViewMongo{
     };
 
     async renderProducts(limit = 10, page = 1, category, available, sort, user = {}, adminPage = false){
-        
-        const uid = String(user._id);
-        
+
+        const email = user.email;
+
         let query = {};
 
         if (category) {
@@ -34,17 +34,15 @@ export class ViewMongo{
 
             if (adminPage) {
 
-                query = {owner: uid};
+                query = {...query, owner: email};
 
             } else {
 
-                query = {owner: { $ne: uid }};
+                query = {...query, owner: { $ne: email }};
 
             };
 
         };
-
-        console.log(query);
 
         const {docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages} = await this.productModel.paginate(
             query,
@@ -58,9 +56,17 @@ export class ViewMongo{
 
         const payload = docs;
 
-        const prevLink = hasPrevPage === false ? null : `/products?page=${prevPage}`;
+        let prevLink = hasPrevPage === false ? null : `/products?page=${prevPage}`;
 
-        const nextLink = hasNextPage === false ? null : `/products?page=${nextPage}`;
+        let nextLink = hasNextPage === false ? null : `/products?page=${nextPage}`;
+
+        if (adminPage) {
+
+            prevLink = hasPrevPage === false ? null : `/admin?page=${prevPage}`;
+
+            nextLink = hasNextPage === false ? null : `/admin?page=${nextPage}`;
+
+        };
 
         return {
             payload: payload,

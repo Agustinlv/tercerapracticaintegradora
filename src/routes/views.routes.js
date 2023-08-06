@@ -5,9 +5,9 @@ import passport from "passport";
 const router = Router();
 
 //File imports
-import { renderProducts, renderCart, renderProfile, renderRegister, renderLogin, redirectProducts, renderAddProduct, renderChat, renderAdmin } from '../dao/controllers/view.controller.js';
+import { renderProducts, renderCart, renderProfile, renderRegister, renderLogin, redirectProducts, renderAddProduct, renderChat, renderAdmin, renderForgot, renderReset } from '../dao/controllers/view.controller.js';
 import { publicAccess } from "../middlewares/access.js";
-import { validateRole } from "../middlewares/validations.js";
+import { validateRole, validateResetToken } from "../middlewares/validations.js";
 
 router.get('/', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), redirectProducts);
 
@@ -25,10 +25,10 @@ router.get('/add', passport.authenticate('jwt', {session: false, failureRedirect
 
 router.get('/admin', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), validateRole(['admin','premium']), renderAdmin);
 
-router.get('/chat', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), validateRole(['user']), renderChat);
+router.get('/chat', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), validateRole(['user', 'premium']), renderChat);
 
-router.get('/forgot');
+router.get('/forgot-password', renderForgot);
 
-router.get('/reset');
+router.get('/reset-password', validateResetToken, renderReset);
 
 export default router;

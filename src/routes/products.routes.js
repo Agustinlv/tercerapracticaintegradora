@@ -14,7 +14,7 @@ router.get('/:pid', passport.authenticate('jwt', {session: false, failureRedirec
 
 router.post('/', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), validateRole(['admin','premium']), addProduct);
 
-router.put('/:pid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), validateRole(['admin']), validateProduct, updateProduct);
+router.put('/:pid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), validateRole(['admin', 'premium']), validateProduct, updateProduct);
 
 router.delete('/:pid', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), validateRole(['admin','premium']), validateProduct, deleteProduct);
 
